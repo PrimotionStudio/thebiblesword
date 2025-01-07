@@ -1,9 +1,25 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/misc/Colors';
 
 const MainScreen = () => {
+    const [word, setWord] = useState({
+        book: '',
+        chapter: '',
+        verse: '',
+        text: '',
+        book_id: '',
+    });
+    const fetchWord = async () => {
+        const response = await fetch('https://bible-api.com/data/web/random');
+        const data = await response.json();
+        console.log(data);
+        setWord(data.random_verse);
+    };
+    useEffect(() => {
+        fetchWord();
+    }, []);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -16,7 +32,8 @@ const MainScreen = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.wordDisplay}>
-                <Text style={styles.wordText}>Home Screen Lorem</Text>
+                <Text style={styles.wordText}>{word.text}</Text>
+                <Text>{word.book + ' ' + word.chapter + ':' + word.verse}</Text>
             </View>
             <View style={styles.action}>
                 <TouchableOpacity>
@@ -99,6 +116,7 @@ const styles = StyleSheet.create({
     wordText: {
         fontSize: 20,
         color: Colors.black,
+        textAlign: 'center',
     },
     action: {
         flexDirection: 'row',
